@@ -12,6 +12,7 @@ public class HelloWorld {
 	public static void main(final String[] args) {
 		final PaymentCard creditCard = new PaymentCard(4012001037141112L, 201805, "FULANO DA SILVA", CardFlag.VISA);
 		creditCard.setSecurityCode(123);
+
 		final CieloAcquirer acquirer = CieloAcquirer.getInstance();
 
 		try {
@@ -24,8 +25,8 @@ public class HelloWorld {
 		try {
 			final PaymentToken token = acquirer.generateToken(creditCard);
 			System.out.println(token);
-			final PaymentTransactionResponse response2 = acquirer.charge(token, 100);
-			System.out.println(response2);
+			final PaymentTransactionResponse response = acquirer.charge(token, 100);
+			System.out.println(response);
 		} catch (final CieloTransactionException e) {
 			e.printStackTrace();
 		}
