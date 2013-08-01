@@ -7,10 +7,10 @@ import java.util.Date;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 
-@XmlRootElement(name = "data-hora")
+@XmlType(name = "data-hora")
 @XmlAccessorType(XmlAccessType.NONE)
 public class CieloTimestamp implements Serializable {
 
@@ -25,16 +25,20 @@ public class CieloTimestamp implements Serializable {
 		cieloFormattedDate = toCieloDateTimeFormat(new Date());
 	}
 
-	private String toCieloDateTimeFormat(Date date) {
+	private String toCieloDateTimeFormat(final Date date) {
 		return CIELO_DATE_TIME_FORMAT.format(date);
 	}
 
 	public Date getDate() {
 		try {
 			return CIELO_DATE_TIME_FORMAT.parse(cieloFormattedDate);
-		} catch (ParseException e) {
+		} catch (final ParseException e) {
 			throw new RuntimeException("Could not parse cielo date to java Date", e);
 		}
 	}
 
+	@Override
+	public String toString() {
+		return cieloFormattedDate;
+	}
 }

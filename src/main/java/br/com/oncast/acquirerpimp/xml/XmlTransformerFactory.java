@@ -1,4 +1,4 @@
-package br.com.oncast.acquirerpimp.xml.writer;
+package br.com.oncast.acquirerpimp.xml;
 
 import java.io.Serializable;
 import java.util.Collection;
@@ -7,7 +7,7 @@ import java.util.Set;
 
 import org.reflections.Reflections;
 
-public class XmlWriterFactory {
+public class XmlTransformerFactory {
 
 	private Set<Class<?>> supportedTypes;
 
@@ -15,45 +15,45 @@ public class XmlWriterFactory {
 
 	private String encoding;
 
-	private XmlWriterFactory() {
+	private XmlTransformerFactory() {
 		supportedTypes = getTypesSupportedByDefault();
 		formattedOutput = false;
 		encoding = "UTF-8";
 	}
 
-	public static XmlWriterFactory get() {
-		return new XmlWriterFactory();
+	public static XmlTransformerFactory get() {
+		return new XmlTransformerFactory();
 	}
 
-	public XmlWriterFactory setSupportedTypes(Set<Class<?>> supportedTypes) {
+	public XmlTransformerFactory setSupportedTypes(Set<Class<?>> supportedTypes) {
 		this.supportedTypes = supportedTypes;
 		return this;
 	}
 
-	public XmlWriterFactory addSupportedTypes(Class<?>... supportedTypes) {
+	public XmlTransformerFactory addSupportedTypes(Class<?>... supportedTypes) {
 		for (Class<?> type : supportedTypes) {
 			this.supportedTypes.add(type);
 		}
 		return this;
 	}
 
-	public XmlWriterFactory addSupportedTypes(Collection<Class<?>> supportedTypes) {
+	public XmlTransformerFactory addSupportedTypes(Collection<Class<?>> supportedTypes) {
 		this.supportedTypes.addAll(supportedTypes);
 		return this;
 	}
 
-	public XmlWriterFactory setEncoding(String encoding) {
+	public XmlTransformerFactory setEncoding(String encoding) {
 		this.encoding = encoding;
 		return this;
 	}
 
-	public XmlWriterFactory setFormattedOutput(boolean formattedOutput) {
+	public XmlTransformerFactory setFormattedOutput(boolean formattedOutput) {
 		this.formattedOutput = formattedOutput;
 		return this;
 	}
 
-	public XmlWriter build() {
-		return new XmlWriter(supportedTypes, formattedOutput, encoding);
+	public XmlTransformer build() {
+		return new XmlTransformer(supportedTypes, formattedOutput, encoding);
 	}
 
 	private Set<Class<?>> getTypesSupportedByDefault() {

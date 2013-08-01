@@ -1,16 +1,21 @@
 package br.com.oncast.acquirerpimp.acquirer;
 
-import java.net.URI;
+import java.net.URL;
 
 import br.com.oncast.acquirerpimp.CieloAcquirerModule;
-import br.com.oncast.acquirerpimp.bean.creditcard.CreditCard;
+import br.com.oncast.acquirerpimp.acquirer.configuration.CieloAcquirerConfiguration;
+import br.com.oncast.acquirerpimp.acquirer.exception.CieloTransactionException;
+import br.com.oncast.acquirerpimp.bean.establishment.Establishment;
 import br.com.oncast.acquirerpimp.bean.payment.OrderData;
 import br.com.oncast.acquirerpimp.bean.payment.PaymentData;
-import br.com.oncast.acquirerpimp.bean.token.CieloToken;
-import br.com.oncast.acquirerpimp.bean.token.CieloTokenStatus;
-import br.com.oncast.acquirerpimp.bean.transaction.CieloPaymentTransaction;
-import br.com.oncast.acquirerpimp.bean.transaction.CieloTokenRequestTransaction;
-import br.com.oncast.acquirerpimp.bean.transaction.TransactionAuthorizationType;
+import br.com.oncast.acquirerpimp.bean.payment.PaymentSource;
+import br.com.oncast.acquirerpimp.bean.payment.creditcard.PaymentCard;
+import br.com.oncast.acquirerpimp.bean.payment.token.PaymentToken;
+import br.com.oncast.acquirerpimp.bean.transaction.payment.AuthorizationType;
+import br.com.oncast.acquirerpimp.bean.transaction.payment.PaymentTransactionRequest;
+import br.com.oncast.acquirerpimp.bean.transaction.payment.PaymentTransactionResponse;
+import br.com.oncast.acquirerpimp.bean.transaction.token.GenerateTokenTransactionRequest;
+import br.com.oncast.acquirerpimp.bean.transaction.token.GenerateTokenTransactionResponse;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -18,27 +23,38 @@ import com.google.inject.Singleton;
 @Singleton
 public class CieloAcquirer {
 
-	private final CieloTransactionSender requestSender;
+	private final CieloTransactionSender transactionSender;
+
+	private final Establishment establishment;
+
+	private final URL returnUrl;
 
 	@Inject
-	CieloAcquirer(CieloTransactionSender requestSender) {
-		this.requestSender = requestSender;
-	}
-
-	public CieloToken generateToken(CreditCard creditCard) {
-		requestSender.send(new CieloTokenRequestTransaction(creditCard));
-		return new CieloToken("TuS6LeBHWjqFFtE7S3zR052Jl/KUlD+tYJFpAdlA87E=", CieloTokenStatus.UNBLOCKED, creditCard.getFlag());
+	CieloAcquirer(final CieloAcquirerConfiguration configuration, final CieloTransactionSender transactionSender) {
+		this.transactionSender = transactionSender;
+		this.establishment = configuration.getEstablishment();
+		this.returnUrl = configuration.getReturnUrl();
 	}
 
 	public static CieloAcquirer getInstance() {
 		return CieloAcquirerModule.getInjector().getInstance(CieloAcquirer.class);
 	}
 
-	public void charge(CreditCard creditCard, int amount) {
-		OrderData order = new OrderData(amount);
-		PaymentData payment = new PaymentData(creditCard.getFlag());
-		CieloPaymentTransaction transaction = new CieloPaymentTransaction(creditCard, order, payment, TransactionAuthorizationType.RECURRING);
-		transaction.setReturnUrl(URI.create("http://anythinkinexistant.com.br"));
-		requestSender.send(transaction);
+	public PaymentToken generateToken(final PaymentCard creditCard) throws CieloTransactionException {
+		final GenerateTokenTransactionRequest request = new GenerateTokenTransactionRequest(creditCard);
+		request.setEstablishment(establishment);
+		final GenerateTokenTransactionResponse response = transactionSender.send(request);
+		return new PaymentToken(response.getTokenData(), creditCard.getCardFlag());
+	}
+
+	public PaymentTransactionResponse charge(final PaymentSource paymentSource, final int value) throws CieloTransactionException {
+		final OrderData order = new OrderData(value);
+		final PaymentData payment = new PaymentData(paymentSource.getCardFlag());
+		final PaymentTransactionRequest request = new PaymentTransactionRequest(paymentSource, order, payment, AuthorizationType.RECURRING)
+				.setAutoCaptureWhenAuthorized(true);
+		request.setEstablishment(establishment);
+		request.setReturnUrl(returnUrl);
+		final PaymentTransactionResponse response = transactionSender.send(request);
+		return response;
 	}
 }

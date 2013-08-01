@@ -1,7 +1,7 @@
 package br.com.oncast.acquirerpimp.acquirer;
 
 import java.io.IOException;
-import java.net.URI;
+import java.net.URL;
 
 import javax.xml.bind.JAXBException;
 
@@ -11,11 +11,13 @@ import org.apache.http.client.fluent.Request;
 
 import br.com.oncast.acquirerpimp.acquirer.configuration.CieloAcquirerConfiguration;
 import br.com.oncast.acquirerpimp.acquirer.exception.CieloTransactionException;
-import br.com.oncast.acquirerpimp.bean.establishment.Establishment;
-import br.com.oncast.acquirerpimp.bean.transaction.CieloResponse;
-import br.com.oncast.acquirerpimp.bean.transaction.CieloTransaction;
-import br.com.oncast.acquirerpimp.xml.writer.XmlWriter;
-import br.com.oncast.acquirerpimp.xml.writer.XmlWriterFactory;
+import br.com.oncast.acquirerpimp.bean.transaction.CieloTransactionRequest;
+import br.com.oncast.acquirerpimp.bean.transaction.CieloTransactionResponse;
+import br.com.oncast.acquirerpimp.bean.transaction.TransactionIdGenerator;
+import br.com.oncast.acquirerpimp.bean.transaction.error.CieloTransactionError;
+import br.com.oncast.acquirerpimp.xml.XmlObject;
+import br.com.oncast.acquirerpimp.xml.XmlTransformer;
+import br.com.oncast.acquirerpimp.xml.XmlTransformerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -27,56 +29,62 @@ public class CieloTransactionSender {
 
 	private static final String CIELO_DATA_PARAMETER_NAME = "mensagem";
 
+	private static final String CIELO_WS_VERSION = "1.2.1";
+
 	private static final int CONNECTION_TIMEOUT = 10000;
 
-	private final URI wsUrl;
-
-	private final Establishment establishment;
+	private final URL wsUrl;
 
 	@Inject
-	CieloTransactionSender(CieloAcquirerConfiguration configuration) {
-		wsUrl = configuration.getUrl();
-		establishment = configuration.getEstablishment();
+	CieloTransactionSender(final CieloAcquirerConfiguration configuration) {
+		wsUrl = configuration.getWebServiceUrl();
 	}
 
-	public <T extends CieloResponse> T send(CieloTransaction<T> request) {
-		request.setEstablishment(establishment);
-		String responseAsString = callWS(request);
+	public <T extends CieloTransactionResponse> T send(final CieloTransactionRequest<T> request) throws CieloTransactionException {
+		request.setId(TransactionIdGenerator.generate());
+		request.setVersion(CIELO_WS_VERSION);
 
-		if (isError(responseAsString)) throw new CieloTransactionException();
-		return request.getResponseBuilder().fromXmlString(responseAsString);
+		final String requestXml = toXml(request);
+		final String responseXml = doPost(requestXml);
+		final XmlObject response = fromXml(responseXml);
 
+		if (response.is(CieloTransactionError.class)) { throw new CieloTransactionException(response.as(CieloTransactionError.class)); }
+
+		return response.as(request.getResponseType());
 	}
 
-	private boolean isError(String responseAsString) {
-		return false;
-	}
-
-	private String callWS(CieloTransaction<?> transaction) {
+	private XmlObject fromXml(final String responseXml) {
 		try {
-			String dataXml = getXmlWriter().asString(transaction);
-			System.out.println("Sending transaction...");
-			XmlWriter.print(transaction);
-			String responseXml = Request.Post(wsUrl)
+			return getXmlTransformer().read(responseXml.replaceAll(" xmlns=\".+\"", ""));
+		} catch (final JAXBException e) {
+			throw new RuntimeException("Could not parse response XML", e);
+		}
+	}
+
+	private String toXml(final CieloTransactionRequest<?> transaction) {
+		try {
+			return getXmlTransformer().toXmlString(transaction);
+		} catch (final JAXBException e) {
+			throw new RuntimeException("Could not transform transaction data to XML", e);
+		}
+	}
+
+	private String doPost(final String dataXml) {
+		try {
+			return Request.Post(wsUrl.toString())
 					.connectTimeout(CONNECTION_TIMEOUT)
 					.bodyForm(Form.form().add(CIELO_DATA_PARAMETER_NAME, dataXml).build())
 					.execute()
 					.returnContent().asString();
-			System.out.println("Received response");
-			System.out.println(responseXml);
-			return responseXml;
-		} catch (ClientProtocolException e) {
-			throw new RuntimeException("Error while trying to access Cielo web service", e);
-		} catch (IOException e) {
-			throw new RuntimeException("Error while trying to send transaction to Cielo web service", e);
-		} catch (JAXBException e) {
-			throw new RuntimeException("Error while trying serialize Cielo transaction data to XML", e);
+		} catch (final ClientProtocolException e) {
+			throw new RuntimeException("Could not access Cielo web service", e);
+		} catch (final IOException e) {
+			throw new RuntimeException("Could not send transaction to Cielo web service", e);
 		}
-
 	}
 
-	private XmlWriter getXmlWriter() {
-		return XmlWriterFactory.get().setEncoding(CIELO_WS_DATA_ENCODING).setFormattedOutput(false).build();
+	private XmlTransformer getXmlTransformer() {
+		return XmlTransformerFactory.get().setEncoding(CIELO_WS_DATA_ENCODING).setFormattedOutput(false).build();
 	}
 
 }

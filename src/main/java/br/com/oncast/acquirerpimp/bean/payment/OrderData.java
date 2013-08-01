@@ -3,9 +3,11 @@ package br.com.oncast.acquirerpimp.bean.payment;
 import java.io.Serializable;
 
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlType;
 
-@XmlRootElement(name = "dados-pedido")
+import com.google.common.base.Objects;
+
+@XmlType(name = "dados-pedido")
 public class OrderData implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -31,35 +33,48 @@ public class OrderData implements Serializable {
 	private CieloSiteLanguage language;
 
 	@XmlElement(name = "soft-descriptor", required = false)
-	private String billDescription;
+	private String softDescriptor;
 
 	OrderData() {}
 
-	public OrderData(long amount) {
+	public OrderData(final long amount) {
 		this.orderId = "" + ++counter;
 		this.amount = amount;
 		this.currency = OrderCurrency.BRL;
 		this.timestamp = new CieloTimestamp();
 	}
 
-	public OrderData setCurrency(OrderCurrency currency) {
+	public OrderData setCurrency(final OrderCurrency currency) {
 		this.currency = currency;
 		return this;
 	}
 
-	public OrderData setDescription(String description) {
+	public OrderData setDescription(final String description) {
 		this.description = description;
 		return this;
 	}
 
-	public OrderData setCieloSiteLanguage(CieloSiteLanguage language) {
+	public OrderData setCieloSiteLanguage(final CieloSiteLanguage language) {
 		this.language = language;
 		return this;
 	}
 
-	public OrderData setBillDescription(String billDescription) {
-		this.billDescription = billDescription;
+	public OrderData setBillDescription(final String billDescription) {
+		this.softDescriptor = billDescription;
 		return this;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this)
+				.add("orderId", orderId)
+				.add("amount", amount)
+				.add("currency", currency)
+				.add("timestamp", timestamp)
+				.add("description", description)
+				.add("language", language)
+				.add("softDescriptor", softDescriptor)
+				.toString();
 	}
 
 }

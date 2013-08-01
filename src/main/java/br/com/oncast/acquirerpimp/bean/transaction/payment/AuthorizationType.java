@@ -1,14 +1,12 @@
-package br.com.oncast.acquirerpimp.bean.transaction;
+package br.com.oncast.acquirerpimp.bean.transaction.payment;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
-import br.com.oncast.acquirerpimp.bean.creditcard.CreditCardFlag;
-
 @XmlType(name = "autorizar")
 @XmlEnum(Integer.class)
-public enum TransactionAuthorizationType {
+public enum AuthorizationType {
 	/**
 	 * Skip authorization and authenticate only
 	 */

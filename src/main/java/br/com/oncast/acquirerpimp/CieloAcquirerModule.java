@@ -13,7 +13,7 @@ public class CieloAcquirerModule extends AbstractModule {
 
 	@Override
 	protected void configure() {
-		bind(String.class).annotatedWith(Names.named(CieloAcquirerConfiguration.FILE_PATH_PARAM_NAME)).toInstance("/acquirer.properties");
+		bind(String.class).annotatedWith(Names.named(CieloAcquirerConfiguration.PROPERTIES_PATH_PARAM_NAME)).toInstance("/acquirer.properties");
 	}
 
 	public static Injector getInjector() {

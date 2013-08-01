@@ -1,4 +1,4 @@
-package br.com.oncast.acquirerpimp.bean.creditcard;
+package br.com.oncast.acquirerpimp.bean.payment.creditcard;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType(name = "bandeira")
 @XmlEnum(String.class)
-public enum CreditCardFlag {
+public enum CardFlag {
 
 	@XmlEnumValue("visa")
 	VISA("^4[0-9]{12}(?:[0-9]{3})?$"),
@@ -36,12 +36,12 @@ public enum CreditCardFlag {
 
 	private String cardRegexPattern;
 
-	private CreditCardFlag(final String regexPattern) {
+	private CardFlag(final String regexPattern) {
 		this.cardRegexPattern = regexPattern;
 	}
 
-	public static CreditCardFlag getFlag(String cardNumber) {
-		for (CreditCardFlag flag : values()) {
+	public static CardFlag getFlag(String cardNumber) {
+		for (CardFlag flag : values()) {
 			if (flag.acceptsStrictly(cardNumber)) return flag;
 		}
 		return null;

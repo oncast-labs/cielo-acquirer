@@ -3,13 +3,9 @@ package br.com.oncast.acquirerpimp.bean.establishment;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRegistry;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
-@XmlRegistry
 @XmlType(name = "dados-ec")
-@XmlRootElement(name = "dados-ec")
 @XmlAccessorType(XmlAccessType.NONE)
 public class Establishment {
 

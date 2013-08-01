@@ -1,4 +1,4 @@
-package br.com.oncast.acquirerpimp.bean.creditcard;
+package br.com.oncast.acquirerpimp.bean.payment.creditcard;
 
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
