@@ -24,7 +24,11 @@ public class TokenData implements Serializable {
 	@XmlElement(name = "numero-cartao-truncado")
 	private String truncatedCardNumber;
 
-	private TokenData() {}
+	TokenData() {}
+
+	public TokenData(final String tokenCode) {
+		code = tokenCode;
+	}
 
 	public String getCode() {
 		return code;
