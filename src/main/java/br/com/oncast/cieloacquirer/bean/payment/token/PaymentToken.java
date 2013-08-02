@@ -41,8 +41,32 @@ public class PaymentToken implements PaymentSource {
 		return tokenData.getStatus();
 	}
 
+	public String getTruncatedCardNumber() {
+		return tokenData.getTruncatedCardNumber();
+	}
+
 	public CardFlag getCardFlag() {
 		return cardFlag;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((getToken() == null) ? 0 : getToken().hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) return true;
+		if (obj == null) return false;
+		if (getClass() != obj.getClass()) return false;
+		final PaymentToken other = (PaymentToken) obj;
+		if (getToken() == null) {
+			if (other.getToken() != null) return false;
+		} else if (!getToken().equals(other.getToken())) return false;
+		return true;
 	}
 
 	@Override
