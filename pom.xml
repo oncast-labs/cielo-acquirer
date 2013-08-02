@@ -34,11 +34,6 @@
 			<artifactId>guava</artifactId>
 			<version>${guavaVersion}</version>
 		</dependency>
-		<dependency>
-			<groupId>com.google.guava</groupId>
-			<artifactId>guava-gwt</artifactId>
-			<version>${guavaVersion}</version>
-		</dependency>
 
 		<!-- Dependency Injection Dependencies -->
 		<dependency>
@@ -75,13 +70,15 @@
 		<dependency>
 			<groupId>org.apache.httpcomponents</groupId>
 			<artifactId>httpclient</artifactId>
-			<version>4.3-beta2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>fluent-hc</artifactId>
-			<version>4.3-beta2</version>
+			<version>4.0.3</version>
 		</dependency>
 	</dependencies>
-
+	
+	<organization>
+		<name>OnCast</name>
+		<url>oncast.com.br</url>
+	</organization>
+	<scm>
+		<url>https://github.com/oncast-labs/cielo-acquirer</url>
+	</scm>
 </project>

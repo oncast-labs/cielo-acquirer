@@ -1,11 +1,11 @@
 package br.com.oncast.acquirerpimp;
 
-import br.com.oncast.acquirerpimp.acquirer.CieloAcquirer;
-import br.com.oncast.acquirerpimp.acquirer.exception.CieloTransactionException;
-import br.com.oncast.acquirerpimp.bean.payment.creditcard.CardFlag;
-import br.com.oncast.acquirerpimp.bean.payment.creditcard.PaymentCard;
-import br.com.oncast.acquirerpimp.bean.payment.token.PaymentToken;
-import br.com.oncast.acquirerpimp.bean.transaction.payment.PaymentTransactionResponse;
+import br.com.oncast.cieloacquirer.acquirer.CieloAcquirer;
+import br.com.oncast.cieloacquirer.bean.payment.creditcard.CardFlag;
+import br.com.oncast.cieloacquirer.bean.payment.creditcard.PaymentCard;
+import br.com.oncast.cieloacquirer.bean.payment.token.PaymentToken;
+import br.com.oncast.cieloacquirer.bean.transaction.CieloTransactionException;
+import br.com.oncast.cieloacquirer.bean.transaction.payment.PaymentTransactionResponse;
 
 public class HelloWorld {
 
