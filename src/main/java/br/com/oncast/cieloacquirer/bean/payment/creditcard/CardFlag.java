@@ -4,6 +4,8 @@ import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
 
+import com.google.common.base.CaseFormat;
+
 @XmlType(name = "bandeira")
 @XmlEnum(String.class)
 public enum CardFlag {
@@ -15,7 +17,12 @@ public enum CardFlag {
 	MASTER_CARD("^5[1-5][0-9]{14}$"),
 
 	@XmlEnumValue("amex")
-	AMERICAN_EXPRESS("^3[47][0-9]{13}$"),
+	AMERICAN_EXPRESS("^3[47][0-9]{13}$") {
+		@Override
+		public int getSecurityCodeLength() {
+			return 4;
+		}
+	},
 
 	@XmlEnumValue("diners")
 	DINERS("^3(?:0[0-5]|[68][0-9])[0-9]{11}$"),
@@ -27,12 +34,14 @@ public enum CardFlag {
 	JCB("^(?:2131|1800|35\\d{3})\\d{11}$"),
 
 	@XmlEnumValue("elo")
-	ELO(null),
+	ELO("^63[0-9]{14}$"),
 
 	@XmlEnumValue("aura")
-	AURA(null);
+	AURA("^50[0-9]{17}$");
 
-	private static final String GENERIC_CREDIT_CARD_PATTERN = "[0-9]{13,16}";
+	public static final int GENERIC_SECURTITY_CODE_LENGTH = 3;
+
+	private static final String GENERIC_CARD_PATTERN = "^(?:[0-9]{13,16}|[0-9]{19})$";
 
 	private String cardRegexPattern;
 
@@ -40,18 +49,31 @@ public enum CardFlag {
 		this.cardRegexPattern = regexPattern;
 	}
 
-	public static CardFlag getFlag(String cardNumber) {
-		for (CardFlag flag : values()) {
+	public static CardFlag getFlag(final String cardNumber) {
+		for (final CardFlag flag : values()) {
 			if (flag.acceptsStrictly(cardNumber)) return flag;
 		}
 		return null;
 	}
 
-	public boolean accepts(String cardNumber) {
-		return cardNumber.matches(cardRegexPattern == null ? GENERIC_CREDIT_CARD_PATTERN : cardRegexPattern);
+	public static boolean isValidCard(final String cardNumber) {
+		return cardNumber.matches(GENERIC_CARD_PATTERN);
 	}
 
-	public boolean acceptsStrictly(String cardNumber) {
+	@Override
+	public String toString() {
+		return CaseFormat.UPPER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, name());
+	}
+
+	public int getSecurityCodeLength() {
+		return GENERIC_SECURTITY_CODE_LENGTH;
+	}
+
+	public boolean accepts(final String cardNumber) {
+		return cardNumber.matches(cardRegexPattern == null ? GENERIC_CARD_PATTERN : cardRegexPattern);
+	}
+
+	public boolean acceptsStrictly(final String cardNumber) {
 		return cardRegexPattern != null && cardNumber.matches(cardRegexPattern);
 	}
 

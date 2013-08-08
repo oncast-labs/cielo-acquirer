@@ -77,4 +77,9 @@ public class PaymentToken implements PaymentSource {
 				.toString();
 	}
 
+	public String getCardFinalNumbers() {
+		final String number = getTruncatedCardNumber();
+		return number.substring(number.length() - 4);
+	}
+
 }

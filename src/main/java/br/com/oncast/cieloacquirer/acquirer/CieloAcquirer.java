@@ -51,7 +51,7 @@ public class CieloAcquirer {
 		final OrderData order = new OrderData(value);
 		final PaymentData payment = new PaymentData(paymentSource.getCardFlag());
 		final PaymentTransactionRequest request = new PaymentTransactionRequest(paymentSource, order, payment, AuthorizationType.RECURRING)
-				.setAutoCaptureWhenAuthorized(true);
+				.setAutoCaptureIfAuthorized(true);
 		request.setEstablishment(establishment);
 		request.setReturnUrl(returnUrl);
 		final PaymentTransactionResponse response = transactionSender.send(request);

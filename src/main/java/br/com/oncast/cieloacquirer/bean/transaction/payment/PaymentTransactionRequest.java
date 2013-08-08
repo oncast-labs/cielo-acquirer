@@ -46,7 +46,7 @@ public class PaymentTransactionRequest implements CieloTransactionRequest<Paymen
 	private AuthorizationType authorizationType;
 
 	@XmlElement(name = "capturar")
-	private boolean autoCaptureWhenAuthorized;
+	private boolean autoCaptureIfAuthorized;
 
 	PaymentTransactionRequest() {}
 
@@ -55,7 +55,7 @@ public class PaymentTransactionRequest implements CieloTransactionRequest<Paymen
 		this.orderData = orderData;
 		this.paymentType = paymentType;
 		this.authorizationType = authorizationType;
-		this.autoCaptureWhenAuthorized = false;
+		this.autoCaptureIfAuthorized = false;
 	}
 
 	public PaymentTransactionRequest setReturnUrl(final URL returnUrl) {
@@ -63,8 +63,8 @@ public class PaymentTransactionRequest implements CieloTransactionRequest<Paymen
 		return this;
 	}
 
-	public PaymentTransactionRequest setAutoCaptureWhenAuthorized(final boolean capture) {
-		this.autoCaptureWhenAuthorized = capture;
+	public PaymentTransactionRequest setAutoCaptureIfAuthorized(final boolean capture) {
+		this.autoCaptureIfAuthorized = capture;
 		return this;
 	}
 

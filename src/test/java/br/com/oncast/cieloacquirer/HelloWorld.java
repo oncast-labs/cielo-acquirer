@@ -1,4 +1,4 @@
-package br.com.oncast.acquirerpimp;
+package br.com.oncast.cieloacquirer;
 
 import br.com.oncast.cieloacquirer.acquirer.CieloAcquirer;
 import br.com.oncast.cieloacquirer.bean.payment.creditcard.CardFlag;
