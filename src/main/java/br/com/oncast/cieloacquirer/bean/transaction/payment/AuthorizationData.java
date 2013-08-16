@@ -18,7 +18,7 @@ public class AuthorizationData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@XmlElement(name = "codigo")
-	private PaymentStatus code;
+	private TransactionStatus code;
 
 	@XmlElement(name = "mensagem")
 	private String message;
@@ -45,10 +45,14 @@ public class AuthorizationData implements Serializable {
 				.add("message", message)
 				.add("timestamp", timestamp)
 				.add("value", value)
-				.add("authorizationStatus", authorizationStatus)
+				.add("authorizationStatus", getAuthorizationStatus())
 				.add("arp", arp)
 				.add("nsu", nsu)
 				.toString();
+	}
+
+	public AuthorizationStatus getAuthorizationStatus() {
+		return authorizationStatus;
 	}
 
 }

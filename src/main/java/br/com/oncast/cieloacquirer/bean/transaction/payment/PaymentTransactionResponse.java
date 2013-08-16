@@ -37,7 +37,7 @@ public class PaymentTransactionResponse implements CieloTransactionResponse {
 	private PaymentData paymentData;
 
 	@XmlElement(name = "status")
-	private PaymentStatus status;
+	private TransactionStatus status;
 
 	@XmlElement(name = "autenticacao")
 	private AuthenticationData authenticationData;
@@ -71,7 +71,7 @@ public class PaymentTransactionResponse implements CieloTransactionResponse {
 		return paymentData;
 	}
 
-	public PaymentStatus getStatus() {
+	public TransactionStatus getTransactionStatus() {
 		return status;
 	}
 
@@ -81,10 +81,6 @@ public class PaymentTransactionResponse implements CieloTransactionResponse {
 
 	public AuthorizationData getAuthorizationData() {
 		return authorizationData;
-	}
-
-	public void setTid(final String tid) {
-		this.tid = tid;
 	}
 
 	@Override

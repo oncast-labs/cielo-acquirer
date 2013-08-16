@@ -35,11 +35,13 @@ public class CieloTransactionSender {
 		transformer = XmlTransformerFactory.get().setEncoding(CIELO_WS_DATA_ENCODING).setFormattedOutput(false).build();
 	}
 
-	public <T extends CieloTransactionResponse> T send(final CieloTransactionRequest<T> request) throws CieloTransactionException {
+	public <T extends CieloTransactionResponse> T send(final CieloTransactionRequest<T> request, final TransactionListener listener) throws CieloTransactionException {
 		request.setId(TransactionIdGenerator.generate());
 		request.setVersion(CIELO_WS_VERSION);
 
-		String responseXml = doPost(transformer.toXml(request));
+		final String requestXml = transformer.toXml(request);
+		String responseXml = doPost(requestXml);
+		if (listener != null) listener.onTransactionSent(requestXml, responseXml);
 		responseXml = transformer.removeNamespace(responseXml);
 		final XmlObject response = transformer.fromXml(responseXml);
 

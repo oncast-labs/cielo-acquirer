@@ -29,6 +29,10 @@ public class CieloAcquirer {
 
 	private final URL returnUrl;
 
+	private static final TransactionListener NULL_TRANSACTION_LISTENER = new TransactionListener() {
+		public void onTransactionSent(final String sentRequestXml, final String receivedResponseXml) {}
+	};
+
 	@Inject
 	CieloAcquirer(final CieloAcquirerConfiguration configuration, final CieloTransactionSender transactionSender) {
 		this.transactionSender = transactionSender;
@@ -41,20 +45,29 @@ public class CieloAcquirer {
 	}
 
 	public PaymentToken generateToken(final PaymentCard creditCard) throws CieloTransactionException {
+		return generateToken(creditCard, NULL_TRANSACTION_LISTENER);
+	}
+
+	public PaymentToken generateToken(final PaymentCard creditCard, final TransactionListener listener) throws CieloTransactionException {
 		final GenerateTokenTransactionRequest request = new GenerateTokenTransactionRequest(creditCard);
 		request.setEstablishment(establishment);
-		final GenerateTokenTransactionResponse response = transactionSender.send(request);
+		final GenerateTokenTransactionResponse response = transactionSender.send(request, listener);
 		return new PaymentToken(response.getTokenData(), creditCard.getCardFlag());
 	}
 
 	public PaymentTransactionResponse charge(final PaymentSource paymentSource, final int value) throws CieloTransactionException {
+		return charge(paymentSource, value, NULL_TRANSACTION_LISTENER);
+	}
+
+	public PaymentTransactionResponse charge(final PaymentSource paymentSource, final int value, final TransactionListener listener) throws CieloTransactionException {
 		final OrderData order = new OrderData(value);
 		final PaymentData payment = new PaymentData(paymentSource.getCardFlag());
 		final PaymentTransactionRequest request = new PaymentTransactionRequest(paymentSource, order, payment, AuthorizationType.RECURRING)
 				.setAutoCaptureIfAuthorized(true);
 		request.setEstablishment(establishment);
 		request.setReturnUrl(returnUrl);
-		final PaymentTransactionResponse response = transactionSender.send(request);
+		final PaymentTransactionResponse response = transactionSender.send(request, listener);
 		return response;
 	}
+
 }

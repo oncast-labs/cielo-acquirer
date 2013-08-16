@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 
 @XmlType
 @XmlEnum(Integer.class)
-public enum PaymentStatus {
+public enum TransactionStatus {
 
 	@XmlEnumValue("0")
 	CREATED,
@@ -21,13 +21,23 @@ public enum PaymentStatus {
 	NOT_AUTHENTICATED,
 
 	@XmlEnumValue("4")
-	AUTHORIZED,
+	AUTHORIZED {
+		@Override
+		public boolean sucess() {
+			return true;
+		}
+	},
 
 	@XmlEnumValue("5")
 	NOT_AUTHORIZED,
 
 	@XmlEnumValue("6")
-	CAPTURED,
+	CAPTURED {
+		@Override
+		public boolean sucess() {
+			return true;
+		}
+	},
 
 	@XmlEnumValue("9")
 	CANCELLED,
@@ -37,5 +47,9 @@ public enum PaymentStatus {
 
 	@XmlEnumValue("12")
 	UNDER_CANCELLATION;
+
+	public boolean sucess() {
+		return false;
+	}
 
 }

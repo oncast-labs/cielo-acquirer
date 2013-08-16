@@ -18,7 +18,7 @@ public class AuthenticationData implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@XmlElement(name = "codigo")
-	private PaymentStatus code;
+	private TransactionStatus code;
 
 	@XmlElement(name = "mensagem")
 	private String message;
