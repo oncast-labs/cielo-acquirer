@@ -22,7 +22,7 @@ public enum AuthorizationType {
 	/**
 	 * Authorize with any results from authentication
 	 */
-	@XmlEnumValue("1")
+	@XmlEnumValue("2")
 	ANY,
 
 	/**
@@ -37,7 +37,7 @@ public enum AuthorizationType {
 	 * <li>{@link CreditCardFlag#AURA}</li>
 	 * </ul>
 	 */
-	@XmlEnumValue("1")
+	@XmlEnumValue("3")
 	DIRECT,
 
 	/**
