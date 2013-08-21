@@ -7,7 +7,7 @@ import br.com.oncast.cieloacquirer.bean.payment.token.PaymentToken;
 import br.com.oncast.cieloacquirer.bean.transaction.CieloTransactionException;
 import br.com.oncast.cieloacquirer.bean.transaction.payment.PaymentTransactionResponse;
 
-public class HelloWorld {
+public class HelloWorldCieloAcquirerExample {
 
 	public static void main(final String[] args) {
 		final PaymentCard creditCard = new PaymentCard(4012001037141112L, 201805, "FULANO DA SILVA", CardFlag.VISA);
