@@ -23,7 +23,7 @@ public enum TransactionStatus {
 	@XmlEnumValue("4")
 	AUTHORIZED {
 		@Override
-		public boolean sucess() {
+		public boolean success() {
 			return true;
 		}
 	},
@@ -34,7 +34,7 @@ public enum TransactionStatus {
 	@XmlEnumValue("6")
 	CAPTURED {
 		@Override
-		public boolean sucess() {
+		public boolean success() {
 			return true;
 		}
 	},
@@ -48,7 +48,7 @@ public enum TransactionStatus {
 	@XmlEnumValue("12")
 	UNDER_CANCELLATION;
 
-	public boolean sucess() {
+	public boolean success() {
 		return false;
 	}
 
