@@ -56,8 +56,13 @@ public enum CardFlag {
 		return null;
 	}
 
-	public static boolean isValidCard(final String cardNumber) {
-		return cardNumber.matches(GENERIC_CARD_PATTERN);
+	public static boolean isValidCard(final CardFlag flag, final String cardNumber) {
+		return flag == null ? cardNumber.matches(GENERIC_CARD_PATTERN) : flag.accepts(cardNumber);
+	}
+
+	public static boolean isValidSecurityCode(final CardFlag flag, final String securityCode) {
+		final int length = flag != null ? flag.getSecurityCodeLength() : CardFlag.GENERIC_SECURTITY_CODE_LENGTH;
+		return securityCode.length() == length;
 	}
 
 	@Override
